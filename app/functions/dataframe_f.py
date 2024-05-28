@@ -43,6 +43,7 @@ def get_most_common_all_keys(dict:dict,df: pd.DataFrame):
 def filter_dict_by_model(dict_data, model_value):
     # Trova gli indici in cui il valore di 'Model' è uguale a model_value
     indices_to_keep = [i for i, model in enumerate(dict_data['Model']) if model == model_value]
+    print(indices_to_keep)
 
     # Crea un nuovo dizionario con solo i valori corrispondenti agli indici trovati
     filtered_dict = {key: [value[i] for i in indices_to_keep] for key, value in dict_data.items()}

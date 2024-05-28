@@ -75,6 +75,7 @@ def get_data(image_folder, tot_images,model_value: str):
             count += 1     
                
     dataframe.get_dataframe(dict_data)
+    dataframe.get_filtered_dataframe(dict_data,model_value)
 
     #get the most common value for all the keys of the exif dict
     #get_most_common_all_keys(filtered_dict_data,df)
