@@ -8,7 +8,7 @@ from functions.extract_exif import get_data
 model_value = 'iPhone 14 Pro Max'
 
 
-def get_images_exif(image_path="D:\\Università\\Tirocinio\\Progetto_iphone_metadati\\images", tot_images=200):
+def get_images_exif(image_path="data\images", tot_images=200):
     print("prova")
     get_data(image_path, tot_images,model_value)
 

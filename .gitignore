@@ -1,10 +1,11 @@
 images
 __pycache__
 main_dump.py
+pandas_prova.py
 prova.txt
 exif_data_transposed.csv
 exif_data.csv
 most_common.csv
 output_excel_refactoring.xlsx
 output_excel.xlsx
-pandas_prova.py
+
