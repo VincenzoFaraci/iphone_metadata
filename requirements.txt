@@ -3,3 +3,4 @@ uvicorn
 pillow
 pandas
 openpyxl
+#pip freeze

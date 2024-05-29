@@ -36,6 +36,9 @@ class Exif_metadata():
     
     def get_data(self,image_folder, tot_images,dict_data:dict,model_value:str):
         count = 0
+        keys_list = list(dict_data.keys())
+        keys_list.remove('filename')
+        
         for filename in os.listdir(image_folder):
             if count >= tot_images:
                 break
@@ -43,11 +46,10 @@ class Exif_metadata():
                 image_path = os.path.join(image_folder, filename)
                 exif_data = self.extract_exif(image_path)
                 dict_data['filename'].append(filename)
-                for key in dict_data.keys():  # Usa le chiavi del dizionario esistenti
-                    if key != 'filename':
-                        value = exif_data.get(key, None)
-                        clean_val = self.clean_value(value) if value is not None else None
-                        dict_data[key].append(clean_val)
+                for key in keys_list:  # Usa le chiavi del dizionario esistenti
+                    value = exif_data.get(key, None)
+                    clean_val = self.clean_value(value) if value is not None else None
+                    dict_data[key].append(clean_val)
                 count += 1
         filtered_dict_data = self.filter_dict_by_model(dict_data,model_value)
         #print(filtered_dict_data) qua ci siamo
@@ -63,6 +65,7 @@ class Exif_dataframe():
         return self.df
     
     def set_dataframe(self):
+        print("Siamo qui un attimo")
         self.df.to_excel('output_excel_refactoring.xlsx', index=False)
     
     def get_most_common(self,key_name:str,df: pd.DataFrame):
