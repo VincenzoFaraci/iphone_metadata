@@ -11,9 +11,10 @@ class Exif_dataframe():
     def __init__(self,dict_data:dict):
         self.df = pd.DataFrame(dict_data)
         
-    
+        
     def get_dataframe(self):
         return self.df
+    
     
     def df_to_excel(self):
         output_excel = os.path.join(output_folder, 'output_excel.xlsx')
@@ -28,6 +29,7 @@ class Exif_dataframe():
             print(f"{key_name},Valore:{most_common}, Totale:{most_common_count}")
         else:
             print(f"No {key_name} data available in EXIF.")
+    
     
     def get_most_common_all_keys(self,dict:dict,df: pd.DataFrame):
         for key in dict:
