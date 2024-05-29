@@ -1,6 +1,5 @@
 import os
 from PIL import Image
-import pandas as pd
 from PIL.ExifTags import TAGS, GPSTAGS
 
 

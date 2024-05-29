@@ -1,9 +1,4 @@
-import os
-from PIL import Image
-import pandas as pd
-from PIL.ExifTags import TAGS
 from functions.extract_exif import get_data
-from models.IphoneExifExtractor import IphoneExifExtractor
 
 #selezionare il modello da analizzare
 model_value = 'iPhone 14 Pro Max'

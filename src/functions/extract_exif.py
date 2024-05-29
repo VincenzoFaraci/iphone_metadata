@@ -1,4 +1,3 @@
-import os
 from models.IphoneExifExtractor import IphoneExifExtractor
 from models.ExifDataframe import Exif_dataframe
 
