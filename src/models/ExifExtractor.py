@@ -13,7 +13,7 @@ class Exif_extractor():
     
     def __filter_dict_by_model(self,dict_data, model_value):
     # Trova gli indici in cui il valore di 'Model' è uguale a model_value
-        indices_to_keep = [i for i, model in enumerate(dict_data['Model']) if model is not None and model in model_value]
+        indices_to_keep = [i for i, model in enumerate(dict_data['Model']) if model is not None and model == model_value]
         # Crea un nuovo dizionario con solo i valori corrispondenti agli indici trovati
         filtered_dict = {key: [value[i] for i in indices_to_keep] for key, value in dict_data.items()}
         return filtered_dict
@@ -32,29 +32,35 @@ class Exif_extractor():
         
     
     
-    def get_data(self,image_folder, tot_images,dict_data:dict,model_value:str):
-        print("dentro il get data generale",tot_images)
-        count = 0
+    def get_data(self,image_folder, dict_data:dict,model_value:str, tot_images = None):
+        #print("dentro il get data generale",tot_images)
         images_list = []
         images_list.extend(dict_data.keys())
         images_list.remove("filename")
-        for filename in os.listdir(image_folder):
-            if count >= tot_images:
-                break
-            if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
-                image_path = os.path.join(image_folder, filename)
-                exif_data = self.extract_exif(image_path)
-                dict_data['filename'].append(filename)
-                """for key in dict_data.keys():  # Usa le chiavi del dizionario esistenti
-                    if key != 'filename': #da ottimizzare
+        if tot_images is not None:
+            count = 0
+            for filename in os.listdir(image_folder):
+                if count >= tot_images:
+                    break
+                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
+                    image_path = os.path.join(image_folder, filename)
+                    exif_data = self.extract_exif(image_path)
+                    dict_data['filename'].append(filename)
+                    for key in images_list: 
                         value = exif_data.get(key, None)
                         clean_val = self.__clean_value(value) if value is not None else None
-                        dict_data[key].append(clean_val)"""
-                for key in images_list: 
-                    value = exif_data.get(key, None)
-                    clean_val = self.__clean_value(value) if value is not None else None
-                    dict_data[key].append(clean_val)
-                count += 1
+                        dict_data[key].append(clean_val)
+                    count += 1
+        else:
+            for filename in os.listdir(image_folder):
+                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
+                    image_path = os.path.join(image_folder, filename)
+                    exif_data = self.extract_exif(image_path)
+                    dict_data['filename'].append(filename)
+                    for key in images_list: 
+                        value = exif_data.get(key, None)
+                        clean_val = self.__clean_value(value) if value is not None else None
+                        dict_data[key].append(clean_val)
         filtered_dict_data = self.__filter_dict_by_model(dict_data,model_value)
         return filtered_dict_data
     
