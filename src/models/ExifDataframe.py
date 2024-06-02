@@ -9,8 +9,7 @@ output_folder = os.path.join(root_dir, 'output')
 class Exif_dataframe():
     def __init__(self,dict_data:dict):
         self.df = pd.DataFrame(dict_data)
-        
-        
+             
     def get_dataframe(self):
         return self.df
     

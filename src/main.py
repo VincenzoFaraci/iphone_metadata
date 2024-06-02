@@ -1,42 +1,44 @@
-from functions.extract_exif import get_data
+from functions.extract_exif import get_folder_data,get_image_data
 import argparse
+import os
+ 
+def main():
+    """
+    Parses command-line arguments to determine the image path and model to analyze.
+    Calls the appropriate function based on whether the path is a directory or a file.
+    """
+    
+    
+    parser = argparse.ArgumentParser(description="Extract EXIF data from images and return the results.")
+    parser.add_argument('images_path', help='The folder containing the images or the path to a single image')
+    parser.add_argument("model_value", nargs='?', default=None, help="The model to analyze (required if the path is a folder)")
+    parser.add_argument("--tot_images", type=int, help="Total number of images to analyze")
 
-#selezionare il modello da analizzare
+    args = parser.parse_args()
 
-parser = argparse.ArgumentParser(description="Prima prova di argparse")
-
-parser.add_argument('images_folder', help='La cartella contente le immagini')
-#parser.add_argument('output_file', help='Il file dove salvare i risultati')
-parser.add_argument("--tot_images", type = int, help="Totale di immagini da voler analizzare")
-parser.add_argument("--model_value", type = str, help="Modello da voler analizzare")
-
-args = parser.parse_args()
-
-model_value = args.model_value
-
-
-def get_images_exif(image_folder=args.images_folder, tot_images = None):
-    get_data(image_folder,model_value,tot_images)
-    """if tot_images is None:
-        get_data(image_folder,model_value)
+    if os.path.isdir(args.images_path):
+        """
+        Check if the provided path is a directory.
+        If it is, check if the model_value is provided. If not, raise an error.
+        Call get_folder_data to extract EXIF data from images in the directory.
+        """
+        if args.model_value is None:
+            parser.error("model_value is required when images_path is a folder")
+        if args.tot_images:
+            get_folder_data(args.images_path, args.model_value, args.tot_images)
+        else:
+            get_folder_data(args.images_path, args.model_value)
+        print("The EXIF data has been saved to the file output_excel.txt in the output folder")
+    elif os.path.isfile(args.images_path):
+        get_image_data(args.images_path)
+        print("The specified path is a file.")
+        print("The EXIF data has been saved to the file image_exif.json in the output folder")
     else:
-        get_data(image_folder,model_value,tot_images)"""
-    
-if args.tot_images:
-    get_images_exif(tot_images=args.tot_images)    
-else:
-    get_images_exif()
-    
-print("Il file è nella cartella output")
+        print("The specified path does not exist.")
 
+if __name__ == "__main__":
+    main()
 
-#RENDERE OPZIONALE LA FILTRAZIONE DEL MODELLO
-#ARGPARSE
-#RENDERE OPZIONAL IL NUMERO DI IMMAGINI DA VOLER ANALIZZARE E ANCHE IL MODELLO
-#GESTIRE QUANDO DIAMO IN INPUT IL PATH DI UN SOLO FILE
-#GESTIRE QUANDO VIENE PASSATA LA CARTELLA CON TUTTE LE IMMAGINI
-#DOCSTRING DA FARE IN TUTTE LE FUNZIONI
-    
     
     
     
