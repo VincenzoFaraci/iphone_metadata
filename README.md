@@ -10,7 +10,6 @@ This project allows extracting EXIF data from provided images in a folder or fro
 4. You can use the following tool to download the images: [gallery-dl](https://github.com/mikf/gallery-dl).
 5. To execute the script, use argparse.
 
-Feel free to suggest any improvements if you believe they are necessary.
 
 # Usage Example
 
