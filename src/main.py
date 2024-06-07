@@ -1,7 +1,9 @@
 from functions.extract_exif import get_folder_data,get_image_data
+from functions.exif_selector import aggiungi_exif
 import argparse
 import os
- 
+
+  
 def main():
     """
     Parses command-line arguments to determine the image path and model to analyze.
@@ -28,18 +30,18 @@ def main():
             get_folder_data(args.images_path, args.model_value, args.tot_images)
         else:
             get_folder_data(args.images_path, args.model_value)
-        print("The EXIF data has been saved to the file output_excel.txt in the output folder")
+        print("The EXIF data has been saved to the file output_excel.xlsx in the output folder")
     elif os.path.isfile(args.images_path):
         get_image_data(args.images_path)
         print("The specified path is a file.")
         print("The EXIF data has been saved to the file image_exif.json in the output folder")
     else:
         print("The specified path does not exist.")
-
+        
 if __name__ == "__main__":
     main()
 
-    
+   
     
     
     

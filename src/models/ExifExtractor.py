@@ -1,6 +1,5 @@
 import os
-from PIL import Image,TiffImagePlugin
-from PIL.ExifTags import TAGS, GPSTAGS
+from exiftool import ExifToolHelper
 
 
 
@@ -31,29 +30,12 @@ class Exif_extractor():
             dict: The filtered dictionary data.
         """
         indices_to_keep = [i for i, model in enumerate(dict_data['Model']) if model is not None and model == model_value] #CHANGE == TO in 
+        print(indices_to_keep)
         filtered_dict = {key: [value[i] for i in indices_to_keep] for key, value in dict_data.items()}
         return filtered_dict
-    
-    def extract_exif(self,image_path):
-        """
-        Extracts EXIF data from the provided image file.
-
-        Args:
-            image_path (str): The path to the image file.
-
-        Returns:
-            dict: A dictionary containing the extracted EXIF data.
-        """
-        try:
-            image = Image.open(image_path) 
-            exif_data = image._getexif() 
-            if exif_data is not None:
-                return {TAGS.get(tag, tag): value for tag, value in exif_data.items()}
-            else:
-                return {}
-        except Exception as e:
-            print(f"Error processing {image_path}: {e}")
-            return {}
+       
+    def __extract_exif():
+        pass    
         
     def get_image_data(self, image_path, dict_data:dict):
         """
@@ -67,14 +49,16 @@ class Exif_extractor():
             dict: The updated dictionary data.
         """
         exif_data = self.extract_exif(image_path)
-        for key in dict_data.keys(): 
+        for key in exif_data.keys(): #change to dict_data
             value = exif_data.get(key, None)
             clean_val = self.__clean_value(value) if value is not None else None
             dict_data[key] = clean_val   
         return dict_data
     
 
-    def get_data(self,image_folder, dict_data:dict,model_value:str, tot_images = None):
+    
+    
+    def get_data(self, image_folder, dict_data: dict, model_value: str, tot_images=None):
         """
         Extracts EXIF data from images in the provided folder.
 
@@ -87,9 +71,6 @@ class Exif_extractor():
         Returns:
             dict: The filtered dictionary data.
         """
-        images_list = []
-        images_list.extend(dict_data.keys())
-        images_list.remove("filename")
         if tot_images is not None:
             count = 0
             for filename in os.listdir(image_folder):
@@ -97,24 +78,35 @@ class Exif_extractor():
                     break
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
                     image_path = os.path.join(image_folder, filename)
-                    exif_data = self.extract_exif(image_path)
-                    dict_data['filename'].append(filename)
-                    for key in images_list: 
-                        value = exif_data.get(key, None)
-                        clean_val = self.__clean_value(value) if value is not None else None
-                        dict_data[key].append(clean_val)
-                    count += 1
+                    with ExifToolHelper() as et:
+                        for data in et.get_metadata(image_path):
+                            for key in data.keys():
+                                value = data.get(key, None)
+                                key = key.split(":")[-1]
+                                if key in dict_data:
+                                    clean_val = self.__clean_value(value)
+                                    dict_data[key].append(clean_val)
+                            count += 1
         else:
             for filename in os.listdir(image_folder):
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
                     image_path = os.path.join(image_folder, filename)
-                    exif_data = self.extract_exif(image_path)
-                    dict_data['filename'].append(filename)
-                    for key in images_list: 
-                        value = exif_data.get(key, None)
-                        clean_val = self.__clean_value(value) if value is not None else None
-                        dict_data[key].append(clean_val)
+                    with ExifToolHelper() as et:
+                        for data in et.get_metadata(image_path):
+                            for key in data.keys():
+                                value = data.get(key, None)
+                                key = key.split(":")[-1]
+                                if key in dict_data:
+                                    clean_val = self.__clean_value(value)
+                                    dict_data[key].append(clean_val)
+        
+        # Find the max length of lists in dict_data values.
+        # This is the length of the list for a key present in all files.                            
+        max_length = max(len(v) for v in dict_data.values()) 
+        for key in dict_data:
+            while len(dict_data[key]) < max_length:
+                dict_data[key].append(None)
+        
         filtered_dict_data = self.__filter_dict_by_model(dict_data,model_value)
         return filtered_dict_data
-    
     

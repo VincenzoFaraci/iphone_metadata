@@ -2,12 +2,10 @@ from models.ExifExtractor import Exif_extractor
 from models.IphoneExifExtractor import IphoneExifExtractor
 from models.ExifDataframe import Exif_dataframe
 from PIL.ExifTags import TAGS
-from pathlib import Path 
 import json
-import pandas as pd
 import os
 from PIL import Image,TiffImagePlugin
-from models import ExifModels
+from exiftool import ExifTool 
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 output_folder = os.path.join(root_dir, 'output')
@@ -24,8 +22,9 @@ def get_folder_data(image_folder,model_value: str, tot_images = None):
     Returns:
         None
     """
+    print("prova")
     if model_value in ("iPhone 14 Pro","iPhone 14 Pro Max","iPhone 14"):
-        print(f"siamo dentro il caso iphone ed infatti modello è {model_value}")
+        print(f"Provided model {model_value}")
         iphone_metadata = IphoneExifExtractor(model_value)
         iphone_metadata.get_data(image_folder,tot_images)
         df_iphone = Exif_dataframe(iphone_metadata.iphone_data)
@@ -42,20 +41,17 @@ def get_image_data(image_path):
     Returns:
         None
     """
-    keys_list = ExifModels.generic_exif_key
-    image_exif = {key: None for key in keys_list} #non ha senso fare un dizionario di liste dato che è una sola immagine
+    # keys_list = ExifModels.generic_exif_key
+    # image_exif = {key: None for key in keys_list} 
+    image_exif = {}
     image_exif_extractor = Exif_extractor()
     image_exif = image_exif_extractor.get_image_data(image_path, image_exif)
     image_exif["filename"] = os.path.basename(image_path)
-    #print(image_exif)
     normalized_exif = {key: cast(value) for key, value in image_exif.items()}
 
-    # Scrivere i dati EXIF in un file JSON
     output_json = os.path.join(output_folder, 'image_exif.json')
     with open(output_json, 'w') as f:
         json.dump(normalized_exif, f, indent=4)
-
-    #print("Dati EXIF scritti in exif_data.json")
     
 def cast(v):
     """
@@ -71,7 +67,7 @@ def cast(v):
         if v.denominator != 0:
             return float(v.numerator) / float(v.denominator)
         else:
-            return None  # o un valore predefinito, a seconda del caso
+            return None  
     elif isinstance(v, tuple):
         return tuple(cast(t) for t in v)
     elif isinstance(v, bytes):
