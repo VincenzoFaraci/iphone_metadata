@@ -5,7 +5,7 @@ from PIL.ExifTags import TAGS
 import json
 import os
 from PIL import Image,TiffImagePlugin
-from exiftool import ExifTool 
+from exiftool import ExifToolHelper 
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 output_folder = os.path.join(root_dir, 'output')
@@ -41,42 +41,19 @@ def get_image_data(image_path):
     Returns:
         None
     """
-    # keys_list = ExifModels.generic_exif_key
-    # image_exif = {key: None for key in keys_list} 
     image_exif = {}
-    image_exif_extractor = Exif_extractor()
-    image_exif = image_exif_extractor.get_image_data(image_path, image_exif)
-    image_exif["filename"] = os.path.basename(image_path)
-    normalized_exif = {key: cast(value) for key, value in image_exif.items()}
-
+    with ExifToolHelper() as et:
+        for data in et.get_metadata(image_path):
+            for key in data.keys():
+                value = data.get(key, None)
+                key = key.split(":")[-1]
+                #print(key,value)
+                image_exif[key] = value
     output_json = os.path.join(output_folder, 'image_exif.json')
     with open(output_json, 'w') as f:
-        json.dump(normalized_exif, f, indent=4)
+        json.dump(image_exif, f, indent=4)
+    return
     
-def cast(v):
-    """
-    Casts the given value to the appropriate type.
-
-    Args:
-        v: The value to cast.
-
-    Returns:
-        The casted value.
-    """
-    if isinstance(v, TiffImagePlugin.IFDRational):
-        if v.denominator != 0:
-            return float(v.numerator) / float(v.denominator)
-        else:
-            return None  
-    elif isinstance(v, tuple):
-        return tuple(cast(t) for t in v)
-    elif isinstance(v, bytes):
-        return v.decode(errors="replace")
-    elif isinstance(v, dict):
-        for kk, vv in v.items():
-            v[kk] = cast(vv)
-        return v
-    else: 
-        return v
+#     
 
     
