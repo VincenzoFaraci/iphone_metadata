@@ -17,6 +17,10 @@ class Exif_dataframe():
     def df_to_excel(self):
         output_excel = os.path.join(output_folder, 'output_excel.xlsx')
         self.df.to_excel(output_excel, index=False)
+        
+    def df_to_csv(self):
+        output_csv = os.path.join(output_folder, 'output_csv.xlsx')
+        self.df.to_csv(output_csv, index=False)
     
     
     def get_most_common(self,key_name:str,df: pd.DataFrame):

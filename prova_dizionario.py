@@ -4,4 +4,7 @@ my_dict = {
 
 my_dict["ImageWidth"].append(3000)
 
+for key in my_dict.keys():
+    key = str(key) + "1"
+
 print(my_dict)
