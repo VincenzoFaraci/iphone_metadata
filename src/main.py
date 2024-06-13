@@ -1,29 +1,27 @@
-from functions.extract_exif import get_folder_data,get_image_data
-from functions.select_exif import set_exif_tags
-from functions.delete_exif import remove_exif,remove_multiple_exif
+#What this program can do?
+# 1- Get exif data of a single file or a folder of images
+# 2- Set exif data of a single image
+# 3- Remove exif daat from a single image or from a folder of images   
+
+
+# functions --> utils
 import argparse
 import os
 
-  
-def main():
-    """
-    Parses command-line arguments to determine the image path and model to analyze.
-    Calls the appropriate function based on whether the path is a directory or a file.
-    """
-    
-    #DA SISTEMARE GLI ARGUMENT IN BASE A QUANDO DOVREMMO USARLI IMPORATANETETETEETETETETET
-    parser = argparse.ArgumentParser(description="Extract EXIF data from images and return the results.")
-    parser.add_argument('images_path', help='The folder containing the images or the path to a single image')
-    parser.add_argument("mode",help="Mode select: 1. Get Exif data (get) 2. Set Exif data (set)")
-    parser.add_argument("model_value", nargs='?', default=None, help="The model to analyze")
-    parser.add_argument("exif_template", nargs='?', default=None, help="The exif template we want to use to set images exif")
-    parser.add_argument("--tot_images", type=int, help="Total number of images to analyze")
-    
+from functions.extract_exif import get_folder_data,get_image_data
+from functions.select_exif import set_exif_tags
+from functions.delete_exif import remove_exif,remove_multiple_exif
 
-    args = parser.parse_args()
+
+  
+def run(args):
     
+    # ??
     print(args.exif_template)
-    
+
+    #TODO: check os.path.exists
+    # print(f"The specified path: {path} does not exist.") quale path ?
+
     if (args.mode).lower() == "get":
         print("Get mode")
         if os.path.isdir(args.images_path):
@@ -49,12 +47,15 @@ def main():
             print("The EXIF data has been saved to the file output_excel.xlsx in the output folder")
         elif os.path.isfile(args.images_path):
             print("The specified path is a file.")
+            # Sistemare !!!
             get_image_data(args.images_path)
+            # TODO: separare logicamente la get dei dati dal salvataggio
             print("The EXIF data has been saved to the file image_exif.json in the output folder")
         else:
             print("The specified path does not exist.")
     elif (args.mode).lower() == "set":
         print("Set mode")
+        #TODO: e se passo una cartella?
         set_exif_tags(args.images_path,args.exif_template)
     elif (args.mode).lower() == "rem":
         print("Remove mode")
@@ -65,14 +66,28 @@ def main():
     else:
         print("Error, the selected mode is non-existent")
         
+
 if __name__ == "__main__":
-    main()
+    """
+    Parses command-line arguments to determine the image path and model di cosa? to analyze.
+    Calls the appropriate function based on whether the path is a directory or a file.
+    """
+    
+    #TODO: adjust 
+    parser = argparse.ArgumentParser(description="Extract EXIF data from images and return the results.")
+    parser.add_argument('images_path', help='The folder containing the images or the path to a single image', type="str", required=True)
+    parser.add_argument("mode", help="Mode select: 1. Get Exif data (get) 2. Set Exif data (set)", type=str) # vedi choose
+    parser.add_argument("model_value", nargs='?', default=None, help="The model to analyze. If not specified COSA SUCCEDE?")
+    parser.add_argument("exif_template", nargs='?', default=None, help="The exif template we want to use to set images exif. If not specified COSA SUCCEDE?")
+    parser.add_argument("--tot_images", type=int, help="Total number of images to analyze")
+    #TODO: output folder, default la tua
+
+    args = parser.parse_args()
+
+    run(args)
 
    
-#What this program can do?
-# 1- Get exif data of a single file or a folder of images
-# 2-Set exif data of a single image
-# 3-Remove exif daat from a single image or from a folder of images   
+
     
     
     

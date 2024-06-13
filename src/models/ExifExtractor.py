@@ -3,16 +3,21 @@ from exiftool import ExifToolHelper
 
 
 class Exif_extractor():
+    # TODO: DESCRIZIONE DELLA CLASSE
+
+
     def __clean_value(self,value):
         """
         Cleans the given value by removing invalid characters.
+        TODO: specifica meglio caso int/str
 
         Args:
-            value: The value to clean.
+            value (str or int): The value to clean.
 
         Returns:
             str: The cleaned value.
         """
+        # TODO: questa funzione serve ancora???
         if isinstance(value, str):
             return ''.join(c for c in value if c.isprintable() and c not in ('\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x0b', '\x0c', '\x0e', '\x0f'))
         return value
