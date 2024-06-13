@@ -1,13 +1,10 @@
-from models.ExifExtractor import Exif_extractor
-from models.IphoneExifExtractor import IphoneExifExtractor
+from classes.ExifExtractor import Exif_extractor
+from classes.IphoneExifExtractor import IphoneExifExtractor
 
-import json
-import os
 from exiftool import ExifToolHelper 
-from models.ExifModels import iphone_exif_key
+from classes.ExifModels import iphone_exif_key
 
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-output_folder = os.path.join(root_dir, 'output')
+
 
 def get_folder_data(image_folder,model_value: str = None, tot_images = None):
     """
@@ -27,18 +24,15 @@ def get_folder_data(image_folder,model_value: str = None, tot_images = None):
         iphone_metadata.set_data(image_folder,tot_images)
         dict_data = iphone_metadata.get_data()
         return dict_data
-        # df_iphone = Exif_dataframe(iphone_metadata.iphone_data)
-        # df_iphone.df_to_csv()
-        # df_iphone.df_to_excel()
     elif model_value is None:
         print("without model")
-        key_dictionary = iphone_exif_key
+        key_dictionary = iphone_exif_key #change to generic_exif_key to be more generic
         dictionary = {key: [] for key in key_dictionary}
         extractor = Exif_extractor()
-        exif_metadata = extractor.get_data(image_folder,dictionary,model_value,tot_images)
-        ed = Exif_dataframe(exif_metadata)
-        ed.df_to_excel()
-    return 
+        exif_metadata = extractor.set_data(image_folder,dictionary,model_value,tot_images)
+        return exif_metadata 
+    else:
+        print("Coming soon")
 
 def get_image_data(image_path):
     """
@@ -59,12 +53,6 @@ def get_image_data(image_path):
                 prova_interna_exif[key] = value
                 #key = key.split(":")[-1] #change the format of exif tags
                 image_exif[key] = value
-    print(image_exif)
-    output_json = os.path.join(output_folder, 'image_exif.json')
-    with open(output_json, 'w') as f:
-        json.dump(image_exif, f, indent=4)
-    return
-    
-#     
+    return image_exif  
 
     

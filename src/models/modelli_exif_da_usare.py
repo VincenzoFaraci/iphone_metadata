@@ -1,6 +1,4 @@
-
 #The ExifTool' tags groups are optional
-
 dict_da_usare = {
     "EXIF:Make": "Apple",
     "EXIF:Model": "iPhone 14 Pro",

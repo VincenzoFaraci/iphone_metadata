@@ -1,7 +1,13 @@
-from ..models.modelli_exif_da_usare import dict_da_usare
-from exiftool import ExifToolHelper
+#from ..models.modelli_exif_da_usare import dict_da_usare
+
 import json
 import os
+
+from models import modelli_exif_da_usare
+from exiftool import ExifToolHelper
+
+
+dict_da_usare = modelli_exif_da_usare.dict_da_usare
 
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
@@ -35,7 +41,7 @@ def set_exif_tags(image_path,exif_template_path):
     image_exif = {}
     with ExifToolHelper() as et:
         for data in et.get_metadata(image_path):
-            #print(data)
+            print(data)
             for key in data.keys():
                 value = data.get(key, None)
                 key = key.split(":")[-1]

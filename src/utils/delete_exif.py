@@ -1,7 +1,7 @@
-from ..models.modelli_exif_da_usare import dict_da_usare
-from exiftool import ExifToolHelper
+#from ..models.modelli_exif_da_usare import dict_da_usare
 import json
 import os
+
 from exiftool import ExifToolHelper,ExifTool
 
 
