@@ -12,8 +12,8 @@ class IphoneExifExtractor(Exif_extractor):
     def stampa(self):
         print(self.iphone_data)
     
-    def get_data(self, image_folder, tot_images = None):
-        self.iphone_data =  super().get_data(image_folder, self.iphone_data, self.model_value, tot_images)
-    
-    
-    #e fino a qui
+    def set_data(self, image_folder, tot_images = None):
+        self.iphone_data =  super().set_data(image_folder, self.iphone_data, self.model_value, tot_images)
+        
+    def get_data(self):
+        return self.iphone_data

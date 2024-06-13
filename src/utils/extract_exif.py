@@ -1,6 +1,6 @@
 from models.ExifExtractor import Exif_extractor
 from models.IphoneExifExtractor import IphoneExifExtractor
-from models.ExifDataframe import Exif_dataframe
+
 import json
 import os
 from exiftool import ExifToolHelper 
@@ -24,10 +24,12 @@ def get_folder_data(image_folder,model_value: str = None, tot_images = None):
     if model_value in ("iPhone 14 Pro","iPhone 14 Pro Max","iPhone 14","iPhone 15"):
         print(f"Provided model {model_value}")
         iphone_metadata = IphoneExifExtractor(model_value)
-        iphone_metadata.get_data(image_folder,tot_images)
-        df_iphone = Exif_dataframe(iphone_metadata.iphone_data)
-        df_iphone.df_to_csv()
-        df_iphone.df_to_excel()
+        iphone_metadata.set_data(image_folder,tot_images)
+        dict_data = iphone_metadata.get_data()
+        return dict_data
+        # df_iphone = Exif_dataframe(iphone_metadata.iphone_data)
+        # df_iphone.df_to_csv()
+        # df_iphone.df_to_excel()
     elif model_value is None:
         print("without model")
         key_dictionary = iphone_exif_key

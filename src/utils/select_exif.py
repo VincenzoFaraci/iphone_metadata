@@ -1,4 +1,4 @@
-from .modelli_exif_da_usare import dict_da_usare
+from ..models.modelli_exif_da_usare import dict_da_usare
 from exiftool import ExifToolHelper
 import json
 import os
