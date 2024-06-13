@@ -6,4 +6,6 @@ output_excel_refactoring.xlsx
 output_excel.xlsx
 argparse_prova.py
 argout.txt
+exifModels_dump.py
+exiftool_prova.py
 prova_dizionario.py

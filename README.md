@@ -3,23 +3,30 @@
 ## Description
 This project allows extracting EXIF data from provided images in a folder or from a single photo by providing its path.
 
+## Requirements
+1. Exiftool
+
 ## Instructions
 1. Install the dependencies.
 2. Create a data folder and place the images inside it.
 3. The images can be downloaded from [Flickr](https://www.flickr.com/).
 4. You can use the following tool to download the images: [gallery-dl](https://github.com/mikf/gallery-dl).
+5. Install Exiftool [Exiftool](https://exiftool.org/)
+6. Insert exiftool into the system path
 5. To execute the script, use argparse.
 
 
 ## Usage
 ```
-usage: main.py [-h] [--tot_images TOT_IMAGES] images_path [model_value]
+usage: main.py [-h] [--tot_images TOT_IMAGES] images_path mode [model_value] [exif_template]
 
 Extract EXIF data from images and return the results.
 
 positional arguments:
   images_path           The folder containing the images or the path to a single image
-  model_value           The model to analyze (required if the path is a folder)
+  mode                  Mode select: 1. Get Exif data (get) 2. Set Exif data (set) 3. Remove Exif data (rem)
+  model_value           The model to analyze
+  exif_template         The exif template we want to use to set images exif
 
 options:
   -h, --help            show this help message and exit
@@ -34,4 +41,8 @@ Save the EXIF data of a single image in a JSON file:
 
 Save the EXIF data of a specified number of images in a dataframe:
 `python src\main.py data\images "iPhone 14 Pro Max" --tot_images 100`
+
+
+
+
 

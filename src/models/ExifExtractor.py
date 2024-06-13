@@ -46,12 +46,29 @@ class Exif_extractor():
 
     
     def __extract_exif(self, image_folder, dict_data: dict, model_value: str, tot_images=None):
+        """
+        Extract EXIF data from images in the specified folder.
+
+        This method iterates over the images in the specified folder to extract their metadata (EXIF data). 
+        It returns a dictionary filtered by the given model_value. The total number of images to process 
+        is a required parameter.
+
+        Args:
+            image_folder (str): The path to the folder containing the images.
+            dict_data (dict): The template dictionary.
+            model_value (str): The value used to filter the resulting dictionary.
+            tot_images (int, optional): The total number of images to process. If not provided, all images 
+                                        in the folder will be processed.
+
+        Returns:
+            dict: A dictionary containing the filtered metadata of the images.
+        """
         if tot_images is not None:
             count = 0
             for filename in os.listdir(image_folder):
                 if count >= tot_images:
                     break
-                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
+                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff',".heic")):
                     image_path = os.path.join(image_folder, filename)
                     with ExifToolHelper() as et:
                         model_tag = et.get_tags(image_path, "EXIF:Model")
@@ -82,6 +99,53 @@ class Exif_extractor():
                                         if key in dict_data:
                                             clean_val = self.__clean_value(value)
                                             dict_data[key].append(clean_val)  
+        return dict_data
+    
+    
+    def __extract_exif_no_model(self, image_folder, dict_data: dict,tot_images=None):
+        """
+        Extract EXIF data from images in the specified folder.
+
+        This method iterates over the images in the specified folder to extract their metadata (EXIF data). 
+        The total number of images to process is a required parameter.
+
+        Args:
+            image_folder (str): The path to the folder containing the images.
+            dict_data (dict): The template dictionary.
+            tot_images (int, optional): The total number of images to process. If not provided, all images 
+                                        in the folder will be processed.
+
+        Returns:
+            dict: A dictionary containing the metadata of the images.
+        """
+        if tot_images is not None:
+            count = 0
+            for filename in os.listdir(image_folder):
+                if count >= tot_images:
+                    break
+                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
+                    image_path = os.path.join(image_folder, filename)
+                    with ExifToolHelper() as et:
+                        for data in et.get_metadata(image_path):
+                            self.__set_dict(data)
+                            for key in dict_data.keys():
+                                value = data.get(key, None)
+                                if key in dict_data:
+                                    clean_val = self.__clean_value(value)
+                                    dict_data[key].append(clean_val)    
+                count += 1  
+        else:
+            for filename in os.listdir(image_folder):
+                if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
+                    image_path = os.path.join(image_folder, filename)
+                    with ExifToolHelper() as et:
+                        for data in et.get_metadata(image_path):
+                            self.__set_dict(data)
+                            for key in dict_data.keys():
+                                value = data.get(key, None)
+                                if key in dict_data:
+                                    clean_val = self.__clean_value(value)
+                                    dict_data[key].append(clean_val)   
         return dict_data    
     
     def __fix_data(self,dict_data: str):
@@ -97,29 +161,8 @@ class Exif_extractor():
             while len(dict_data[key]) < max_length:
                 dict_data[key].append(None)
     
-        
-    def get_image_data(self, image_path, dict_data:dict):
-        """
-        Updates the provided dictionary data with EXIF data from the image file.
-
-        Args:
-            image_path (str): The path to the image file.
-            dict_data (dict): The dictionary containing the EXIF data to update.
-
-        Returns:
-            dict: The updated dictionary data.
-        """
-        exif_data = self.extract_exif(image_path)
-        for key in exif_data.keys(): #change to dict_data
-            value = exif_data.get(key, None)
-            clean_val = self.__clean_value(value) if value is not None else None
-            dict_data[key] = clean_val   
-        return dict_data
     
-
-    
-    
-    def get_data(self, image_folder, dict_data: dict, model_value: str, tot_images=None):
+    def get_data(self, image_folder, dict_data: dict, model_value: str = None, tot_images=None):
         """
         Extracts EXIF data from images in the provided folder.
 
@@ -132,8 +175,12 @@ class Exif_extractor():
         Returns:
             dict: The filtered dictionary data.
         """
-        dict_data = self.__extract_exif(image_folder,dict_data,model_value,tot_images)
-        self.__fix_data(dict_data)
-        return dict_data
+        if model_value is None:
+            self.__extract_exif_no_model(image_folder,dict_data,tot_images)
+            return dict_data
+        else: 
+            dict_data = self.__extract_exif(image_folder,dict_data,model_value,tot_images)
+            self.__fix_data(dict_data)
+            return dict_data
     
     

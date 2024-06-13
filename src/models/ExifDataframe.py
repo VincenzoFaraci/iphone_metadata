@@ -1,6 +1,5 @@
 import os
 import pandas as pd
-from PIL.ExifTags import TAGS, GPSTAGS
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 output_folder = os.path.join(root_dir, 'output')
