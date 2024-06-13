@@ -51,9 +51,3 @@ Save the EXIF data of a single image in a JSON file:
 
 Save the EXIF data of a specified number of images in a dataframe:
 `python src\main.py data\images "iPhone 14 Pro Max" --tot_images 100`
-
-
-
-
-
-test line

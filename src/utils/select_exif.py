@@ -1,5 +1,3 @@
-#from ..models.modelli_exif_da_usare import dict_da_usare
-
 import json
 import os
 
@@ -7,28 +5,27 @@ from models import modelli_exif_da_usare
 from exiftool import ExifToolHelper
 
 
-dict_da_usare = modelli_exif_da_usare.dict_da_usare
-
+default_exif_set = json.load("src\models\exif_template.json")
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 output_folder = os.path.join(root_dir, 'output')
 
 
-def set_exif_tags(image_path,exif_template_path):
+def set_exif_tags(image_path,exif_template_path:str = None):
     print("exiftemplate_path",exif_template_path)
     """
     Set EXIF data for the provided image file.
     
     Args:
         image_path (str): The path to the image file.
-        
+        exif_template_path (str): the path of the provided exif set
     Returns:
         None
     """
     
     if exif_template_path is None:
         print("Default Exif set has been used since no Exif model was provided.")
-        data_dict = dict_da_usare
+        data_dict = default_exif_set
     else:
         print("The provided Exif set has been used")
         with open(exif_template_path, 'r') as file:
@@ -50,7 +47,7 @@ def set_exif_tags(image_path,exif_template_path):
         if key in data.keys():
            pass
         else:
-           print(f"La chiave {key} non è stata aggiunta perchè errata")
+           print(f"The key {key} was not added because it is incorrect.")
                    
     output_json = os.path.join(output_folder, 'image_with_new_exif.json')
     with open(output_json, 'w') as f:
