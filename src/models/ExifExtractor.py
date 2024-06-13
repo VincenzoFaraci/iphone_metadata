@@ -162,7 +162,7 @@ class Exif_extractor():
                 dict_data[key].append(None)
     
     
-    def get_data(self, image_folder, dict_data: dict, model_value: str = None, tot_images=None):
+    def set_data(self, image_folder, dict_data: dict, model_value: str = None, tot_images=None):
         """
         Extracts EXIF data from images in the provided folder.
 
