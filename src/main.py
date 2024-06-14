@@ -9,9 +9,9 @@ import os
 from utils.get_exif_data import get_folder_data,get_image_data
 from utils.select_exif import set_exif_tags
 from utils.delete_exif import remove_exif,remove_multiple_exif
-from utils import save_exif as save
+from utils.save_exif import save_exif_dataframe,save_exif_json
 
-dictionary = {}
+exif_data = {}
   
 def run(args):
     if os.path.exists(args.images_path):
@@ -19,29 +19,28 @@ def run(args):
             print("Get mode")
             if os.path.isdir(args.images_path):
                 if args.model_value is None and args.tot_images is None:
-                    print(f"A: folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
-                    dictionary = get_folder_data(args.images_path)
-                    save.save_exif_dataframe(dictionary)
+                    print(f"folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
+                    exif_data = get_folder_data(args.images_path)
+                    save_exif_dataframe(exif_data)
                 elif args.tot_images is not None and args.model_value is not None:
-                    print(f"B: folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
-                    dictionary = get_folder_data(args.images_path, args.model_value, args.tot_images)
-                    save.save_exif_dataframe(dictionary)
+                    print(f"folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
+                    exif_data = get_folder_data(args.images_path, args.model_value, args.tot_images)
+                    save_exif_dataframe(exif_data)
                 elif args.tot_images is None and args.model_value is not None:
-                    print(f"C: folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
-                    dictionary = get_folder_data(args.images_path, args.model_value)
-                    save.save_exif_dataframe(dictionary)
+                    print(f"folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
+                    exif_data = get_folder_data(args.images_path, args.model_value)
+                    save_exif_dataframe(exif_data)
                 elif args.tot_images is not None and args.model_value is None:
-                    print(f"D: folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
-                    dictionary = get_folder_data(args.images_path,args.model_value, args.tot_images)
-                    #print(dictionary)
-                    save.save_exif_dataframe(dictionary)
+                    print(f"folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
+                    exif_data = get_folder_data(args.images_path,args.model_value, args.tot_images)
+                    save_exif_dataframe(exif_data)
                 else:
                     print(f"Error, folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
                 print("The EXIF data has been saved to the file output_excel.xlsx in the output folder")
             elif os.path.isfile(args.images_path):
                 print("The specified path is a file.")
-                dictionary = get_image_data(args.images_path)
-                save.save_exif_json(dictionary)
+                exif_data = get_image_data(args.images_path)
+                save_exif_json(exif_data)
                 print("The EXIF data has been saved to the file image_exif.json in the output folder")
             else:
                 print("The specified path does not exist.")

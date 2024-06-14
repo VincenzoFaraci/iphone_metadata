@@ -25,7 +25,6 @@ def remove_exif(image_path):
     image_exif = {}
     with ExifToolHelper() as et:
         for data in et.get_metadata(image_path):
-            print(data)
             for key in data.keys():
                 value = data.get(key, None)
                 key = key.split(":")[-1]
@@ -41,5 +40,4 @@ def remove_multiple_exif(image_folder):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
             image_path = os.path.join(image_folder, filename)
             with ExifTool() as e:
-                #print(f"")
                 e.execute(f'-all=', image_path.encode())

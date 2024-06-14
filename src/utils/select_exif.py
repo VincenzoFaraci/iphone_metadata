@@ -1,18 +1,19 @@
 import json
 import os
 
-from models import modelli_exif_da_usare
+#from models import modelli_exif_da_usare
 from exiftool import ExifToolHelper
 
 
-default_exif_set = json.load("src\models\exif_template.json")
+default_exif_set_path = "src\\models\\exif_template.json"
+with open(default_exif_set_path, 'r') as file:
+    default_exif_set = json.load(file)
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 output_folder = os.path.join(root_dir, 'output')
 
 
 def set_exif_tags(image_path,exif_template_path:str = None):
-    print("exiftemplate_path",exif_template_path)
     """
     Set EXIF data for the provided image file.
     
@@ -38,7 +39,6 @@ def set_exif_tags(image_path,exif_template_path:str = None):
     image_exif = {}
     with ExifToolHelper() as et:
         for data in et.get_metadata(image_path):
-            print(data)
             for key in data.keys():
                 value = data.get(key, None)
                 key = key.split(":")[-1]

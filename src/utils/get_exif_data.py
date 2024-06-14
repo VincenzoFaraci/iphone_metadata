@@ -19,13 +19,13 @@ def get_folder_data(image_folder,model_value: str = None, tot_images = None):
         None
     """
     if model_value in ("iPhone 14 Pro","iPhone 14 Pro Max","iPhone 14","iPhone 15"):
-        print(f"Provided model {model_value}")
+        print(f"Provided model = {model_value}")
         iphone_metadata = IphoneExifExtractor(model_value)
         iphone_metadata.set_data(image_folder,tot_images)
         dict_data = iphone_metadata.get_data()
         return dict_data
     elif model_value is None:
-        print("without model")
+        print(f"Provided model = {model_value}")
         key_dictionary = iphone_exif_key #change to generic_exif_key to be more generic
         dictionary = {key: [] for key in key_dictionary}
         extractor = Exif_extractor()
