@@ -3,9 +3,11 @@
 ## Description
 The project allows working with the EXIF data of provided images, whether a single image or a folder of images:
 
-It is possible to extract the EXIF data from the provided images.
-It is possible to remove the EXIF data from the provided images.
-It is possible to set a predefined or provided set of EXIF data to the provided images.
+- Extract the EXIF data from the provided images.
+
+- Remove the EXIF data from the provided images.
+
+- Set a predefined or provided set of EXIF data to the provided images.
 
 ## System Requirements
 - Python 3.12.3
@@ -14,13 +16,17 @@ It is possible to set a predefined or provided set of EXIF data to the provided 
 
 ## Instructions
 1. Install the dependencies trough requirements.txt
+2. Install Exiftool and add it to the system PATH (or the virtual environment PATH if one is created)
 
 
-Test Dataset
+## Test Dataset
 
-Data Source
+### Data Source
 The images can be downloaded from [Flickr](https://www.flickr.com/).
 You can use the following tool to download the images: [gallery-dl](https://github.com/mikf/gallery-dl).
+
+### Results
+After utilizing the Pandas library to analyze the dataset, it became possible to effectively study common EXIF tags depending on the camera sensor model. This analysis facilitated the creation of a pre-compiled set of EXIF metadata, which was used to add desired EXIF information to images lacking exif data.
 
 
 
