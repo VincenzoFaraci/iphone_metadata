@@ -1,8 +1,8 @@
-from classes.ExifExtractor import Exif_extractor
+from classes.ExifExtractor import ExifExtractor
 from classes.IphoneExifExtractor import IphoneExifExtractor
 
 from exiftool import ExifToolHelper 
-from classes.ExifModels import iphone_exif_key
+from models.exif_models import iphone_exif_key
 
 
 
@@ -28,7 +28,7 @@ def get_folder_data(image_folder,model_value: str = None, tot_images = None):
         print(f"Provided model = {model_value}")
         key_dictionary = iphone_exif_key #change to generic_exif_key to be more generic
         dictionary = {key: [] for key in key_dictionary}
-        extractor = Exif_extractor()
+        extractor = ExifExtractor()
         exif_metadata = extractor.set_data(image_folder,dictionary,model_value,tot_images)
         return exif_metadata 
     else:

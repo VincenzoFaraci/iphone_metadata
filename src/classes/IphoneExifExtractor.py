@@ -1,9 +1,9 @@
-from .ExifExtractor import Exif_extractor
-from .ExifModels import iphone_exif_key
+from .ExifExtractor import ExifExtractor
+from models.exif_models import iphone_exif_key
 
 
 
-class IphoneExifExtractor(Exif_extractor):
+class IphoneExifExtractor(ExifExtractor):
     def __init__(self,model_value:str):
         self.model_value = model_value
         self.keys = iphone_exif_key

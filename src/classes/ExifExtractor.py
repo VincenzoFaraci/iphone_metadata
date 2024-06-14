@@ -2,8 +2,17 @@ import os
 from exiftool import ExifToolHelper
 
 
-class Exif_extractor():
+class ExifExtractor():
     # TODO: DESCRIZIONE DELLA CLASSE
+    """
+    A class to extract EXIF metadata from images.
+
+    This class provides methods to extract EXIF data from images located in a specified 
+    folder or a single image file. It uses the ExifTool library for metadata extraction.
+    
+    """
+    
+    
     def __clean_value(self,value):
         """
         Cleans the given value by removing invalid characters.

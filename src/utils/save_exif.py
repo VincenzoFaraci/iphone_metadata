@@ -2,7 +2,7 @@ import os
 import json
 
 
-from classes.ExifDataframe import Exif_dataframe
+from classes.ExifDataframe import ExifDataframe
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 output_folder = os.path.join(root_dir, 'output')
@@ -10,7 +10,7 @@ output_folder = os.path.join(root_dir, 'output')
 
 
 def save_exif_dataframe(dict_data:dict):
-    exif_df = Exif_dataframe(dict_data)
+    exif_df = ExifDataframe(dict_data)
     exif_df.df_to_excel()
     exif_df.df_to_excel()
     
