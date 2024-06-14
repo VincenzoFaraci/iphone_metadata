@@ -19,11 +19,14 @@ The project allows working with the EXIF data of provided images, whether a sing
 2. Install Exiftool and add it to the system PATH (or the virtual environment PATH if one is created)
 
 
-Test Dataset
+## Test Dataset
 
-Data Source
+### Data Source
 The images can be downloaded from [Flickr](https://www.flickr.com/).
 You can use the following tool to download the images: [gallery-dl](https://github.com/mikf/gallery-dl).
+
+### Results
+After utilizing the Pandas library to analyze the dataset, it became possible to effectively study common EXIF tags depending on the camera sensor model. This analysis facilitated the creation of a pre-compiled set of EXIF metadata, which was used to add desired EXIF information to images lacking exif data.
 
 
 
