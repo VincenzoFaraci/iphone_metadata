@@ -1,4 +1,3 @@
-#from ..models.modelli_exif_da_usare import dict_da_usare
 import json
 import os
 
