@@ -3,9 +3,11 @@
 ## Description
 The project allows working with the EXIF data of provided images, whether a single image or a folder of images:
 
-It is possible to extract the EXIF data from the provided images.
-It is possible to remove the EXIF data from the provided images.
-It is possible to set a predefined or provided set of EXIF data to the provided images.
+- Extract the EXIF data from the provided images.
+
+- Remove the EXIF data from the provided images.
+
+- Set a predefined or provided set of EXIF data to the provided images.
 
 ## System Requirements
 - Python 3.12.3
