@@ -25,7 +25,6 @@ class ExifExtractor():
         Returns:
             str: The cleaned value.
         """
-        # TODO: questa funzione serve ancora???
         if isinstance(value, str):
             return ''.join(c for c in value if c.isprintable() and c not in ('\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x0b', '\x0c', '\x0e', '\x0f'))
         return value

@@ -1,7 +1,6 @@
 import json
 import os
 
-#from models import modelli_exif_da_usare
 from exiftool import ExifToolHelper
 
 
