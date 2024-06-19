@@ -3,6 +3,8 @@
 # 2- Set exif data of a single image
 # 3- Remove exif daat from a single image or from a folder of images   
 
+
+
 import argparse
 import os
 
@@ -46,7 +48,6 @@ def run(args):
                 print("The specified path does not exist.")
         elif (args.mode).lower() == "set":
             print("Set mode")
-            #TODO: e se passo una cartella?
             set_exif_tags(args.images_path,args.exif_template) 
         elif (args.mode).lower() == "rem":
             print("Remove mode")

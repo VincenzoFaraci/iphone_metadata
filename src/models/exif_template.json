@@ -1,6 +1,6 @@
 {
     "EXIF:Make": "Apple",
-    "EXIF:Model": "iPhone 1 Pro Max",
+    "EXIF:Model": "iPhone 10 Pro Max",
     "EXIF:XResolution": 240,
     "EXIF:YResolution": 240,
     "EXIF:ResolutionUnit": 2,
@@ -45,13 +45,10 @@
     "Composite:SubSecCreateDate": "2023:03:11 05:43:45+09:30",
     "Composite:SubSecDateTimeOriginal": "2023:03:11 05:43:45.456+09:30",
     "Composite:SubSecModifyDate": "2023:04:03 13:49:37-04:00",
-    "Composite:DateTimeCreated": "2026:03:11 05:43:45+09:30",
-    "Composite:DigitalCreationDateTime": "2029:03:11 05:43:45+09:30",
     "Composite:CircleOfConfusion": "0.00863829993079914",
     "Composite:FOV": 73.7398575770811,
     "Composite:FocalLength35efl": 24,
     "Composite:HyperfocalDistance": 3.06194508316327,
     "Composite:LightValue": -3.62593428177746,
-    "Composite:LensID": "iPhone 14 Pro back triple camera 6.86mm f/1.78",
-    "Prova:ProvettaNO": 2234 
+    "Composite:LensID": "iPhone 14 Pro back triple camera 6.86mm f/1.78"
 }
