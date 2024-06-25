@@ -22,7 +22,7 @@ The project allows working with the EXIF data of provided images, whether a sing
 ## Test Dataset
 
 ### Data Source
-The images can be downloaded from [Flickr](https://www.flickr.com/).
+The images can be downloaded from [Flickr](https://www.flickr.com/groups/iphone14pro/).
 You can use the following tool to download the images: [gallery-dl](https://github.com/mikf/gallery-dl).
 
 ### Results
