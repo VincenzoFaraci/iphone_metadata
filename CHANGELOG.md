@@ -1,14 +1,4 @@
 # CHANGELOG
 
-## [0.3]
-
-## [0.2] - data
-
-
-
-
-## [0.1] - data
-
-### init
-    - mode 1
-    - mode 2
+## [0.1]
+    -v 1.0   Get,Set and Remove exif data from images
