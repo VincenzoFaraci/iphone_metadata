@@ -16,7 +16,7 @@ The project allows working with the EXIF data of provided images, whether a sing
 
 ## Instructions
 1. Install the dependencies trough requirements.txt
-2. Install Exiftool and add it to the system PATH (or the virtual environment PATH if one is created)
+2. Install Exiftool and add it to the system PATH (or the virtual environment PATH if one is created)(see how to install ExifTool [here](https://exiftool.org/install.html))
 
 
 ## Test Dataset
