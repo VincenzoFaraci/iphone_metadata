@@ -16,7 +16,8 @@ class ExifExtractor():
         """
         Cleans the given value by removing invalid characters.
         This function is called for every value in the dictonary in order to avoid problems
-        TODO: specifica meglio caso int/str
+
+        # problems IN COSA??????
 
         Args:
             value (str or int): The value to clean.
@@ -41,6 +42,7 @@ class ExifExtractor():
             dictionary (dict): The dictionary from which duplicate keys based on 
                             their suffixes will be removed.
         """
+        # SE GLI EXIF SONO CON UNA STRUTTURA DEVO REPLICARLI ESATTAMENTE CON LA STESSA STRUTTURA
         seen_suffixes = set()
         keys_to_remove = []
 
@@ -72,6 +74,8 @@ class ExifExtractor():
         Returns:
             None
         """
+
+        # TODO: COMMENTI AL CODICE
         with ExifToolHelper() as et:
             if model_value is not None:
                 model_tag = et.get_tags(image_path, "EXIF:Model")
@@ -79,10 +83,10 @@ class ExifExtractor():
                     model_tag = model_tag[0]["EXIF:Model"]
                     if model_tag == model_value:
                         for data in et.get_metadata(image_path):
-                            self.__fix_dict(data)
-                            for key in dict_data.keys():
+                            self.__fix_dict(data) # RIVEDI FIX
+                            for key in dict_data.keys(): 
                                 value = data.get(key, None)
-                                if key in dict_data:
+                                if key in dict_data: # ??????????????????????
                                     clean_val = self.__clean_value(value)
                                     dict_data[key].append(clean_val)   
             else:
@@ -115,7 +119,7 @@ class ExifExtractor():
         Returns:
             dict: A dictionary containing the extracted and filtered EXIF metadata from the images.
         """
-        print("prova")
+        print("prova") # print prova ???
         if tot_images is not None:
             count = 0
             for filename in os.listdir(image_folder):

@@ -12,7 +12,7 @@ output_folder = os.path.join(root_dir, 'output')
 def save_exif_dataframe(dict_data:dict):
     exif_df = ExifDataframe(dict_data)
     exif_df.df_to_excel()
-    exif_df.df_to_excel()
+    exif_df.df_to_excel() # 2 volte
     
 def save_exif_json(dict_data:dict):
     output_json = os.path.join(output_folder, 'image_exif.json')

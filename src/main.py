@@ -19,8 +19,10 @@ def run(args):
     if os.path.exists(args.images_path):
         if (args.mode).lower() == "get":
             print("Get mode")
+            # TODO: aggiusta le chiamate a funzione
             if os.path.isdir(args.images_path):
                 if args.model_value is None and args.tot_images is None:
+                    # la print una sola volta
                     print(f"folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
                     exif_data = get_folder_data(args.images_path)
                     save_exif_dataframe(exif_data)
@@ -37,23 +39,30 @@ def run(args):
                     exif_data = get_folder_data(args.images_path,args.model_value, args.tot_images)
                     save_exif_dataframe(exif_data)
                 else:
+                    # TODO: Error di cosa?
                     print(f"Error, folder path = {args.images_path}, model = {args.model_value} e tot_images = {args.tot_images}")
+                
+                # ???
                 print("The EXIF data has been saved to the file output_excel.xlsx in the output folder")
-            elif os.path.isfile(args.images_path):
+            else: #os.path.isfile(args.images_path):
                 print("The specified path is a file.")
                 exif_data = get_image_data(args.images_path)
                 save_exif_json(exif_data)
                 print("The EXIF data has been saved to the file image_exif.json in the output folder")
-            else:
-                print("The specified path does not exist.")
+            
+            # TODO: il controllo di esistenza lo fai già, qua stai controllando se è un file o una dir
+            #else:
+            #    print("The specified path does not exist.")
+        
         elif (args.mode).lower() == "set":
             print("Set mode")
             set_exif_tags(args.images_path,args.exif_template) 
+        
         elif (args.mode).lower() == "rem":
             print("Remove mode")
             if os.path.isdir(args.images_path):
                 remove_multiple_exif(args.images_path)
-            elif os.path.isfile(args.images_path):
+            elif os.path.isfile(args.images_path): # elif non serve
                 remove_exif(args.images_path)
     else:
         print(f"The specified path: {args.images_path} does not exist.") 

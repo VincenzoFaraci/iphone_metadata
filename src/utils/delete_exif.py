@@ -5,6 +5,8 @@ from exiftool import ExifToolHelper,ExifTool
 
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
+                           
+# TODO: attenzione
 output_folder = os.path.join(root_dir, 'output')
 
 
@@ -44,6 +46,7 @@ def remove_multiple_exif(image_folder_path):
     Returns:
         None
     """
+    # TODO: meglio se le immagini senza exif vengano inserite in un'altra cartella
     for filename in os.listdir(image_folder_path):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
             image_path = os.path.join(image_folder_path, filename)
