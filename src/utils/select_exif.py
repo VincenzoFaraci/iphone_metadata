@@ -49,7 +49,6 @@ def remove_original(folder_path):
 
       
 def set_exif_tags(images_folder,exif_template_path:str = None):
-    print("Siamo qui")
     """
     Set EXIF for all the provided image file in the folder.
     
@@ -64,7 +63,6 @@ def set_exif_tags(images_folder,exif_template_path:str = None):
         data_dict = choose_exif_template(exif_template_path)
         
         if os.path.isdir(images_folder):
-            print("folder case")
             for filename in os.listdir(images_folder):
                 image_path = os.path.join(images_folder, filename)
                 with ExifToolHelper() as et:
@@ -78,12 +76,6 @@ def set_exif_tags(images_folder,exif_template_path:str = None):
             with ExifToolHelper() as et:
                 et.set_tags(image_path, data_dict)
             check_tags(image_path,data_dict)    
-            #image_exif = check_tags(image_path,data_dict)
-            
-            #da eliminare, per stampare utilizzare save_exif.py         
-            # output_json = os.path.join(output_folder, 'image_with_new_exif.json')
-            # with open(output_json, 'w') as f:
-            #     json.dump(image_exif, f, indent=4)
 
         if os.path.isfile(images_folder):
             images_folder = os.path.dirname(images_folder)
