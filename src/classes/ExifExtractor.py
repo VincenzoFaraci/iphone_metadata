@@ -3,7 +3,6 @@ from exiftool import ExifToolHelper
 
 
 class ExifExtractor():
-    # TODO: DESCRIZIONE DELLA CLASSE
     """
     A class to extract EXIF metadata from images.
 
