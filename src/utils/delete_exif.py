@@ -1,14 +1,20 @@
-import json
 import os
 
-from exiftool import ExifToolHelper,ExifTool
+from exiftool import ExifTool
 
 
-root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-                           
-# TODO: attenzione
-output_folder = os.path.join(root_dir, 'output')
-
+def remove_original(folder_path):
+    """
+    Remove file ending with jpg_original
+    
+    Input:
+        folder_path: The path to the folder where files jpg_original are stored
+    Output:
+        None
+    """
+    for filename in os.listdir(folder_path):
+        if filename.lower().endswith('.jpg_original'):
+            os.remove(os.path.join(folder_path, filename))
 
 def remove_exif(image_path):
     """
@@ -22,18 +28,9 @@ def remove_exif(image_path):
     """ 
     with ExifTool() as e:
         e.execute(f'-all=', image_path.encode())
-
-    image_exif = {}
-    with ExifToolHelper() as et:
-        for data in et.get_metadata(image_path):
-            for key in data.keys():
-                value = data.get(key, None)
-                key = key.split(":")[-1]
-                image_exif[key] = value
-                
-    output_json = os.path.join(output_folder, 'image_without_exif.json')
-    with open(output_json, 'w') as f:
-        json.dump(image_exif, f, indent=4)
+ 
+    image_dir_path = os.path.dirname(image_path)    
+    remove_original(image_dir_path)
 
 
 def remove_multiple_exif(image_folder_path):
@@ -46,9 +43,9 @@ def remove_multiple_exif(image_folder_path):
     Returns:
         None
     """
-    # TODO: meglio se le immagini senza exif vengano inserite in un'altra cartella
     for filename in os.listdir(image_folder_path):
         if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff')):
             image_path = os.path.join(image_folder_path, filename)
             with ExifTool() as e:
                 e.execute(f'-all=', image_path.encode())
+    remove_original(image_folder_path)

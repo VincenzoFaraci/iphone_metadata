@@ -2,7 +2,6 @@ import os
 import pandas as pd
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
-output_folder = os.path.join(root_dir, 'output')
 
 
 class ExifDataframe:
@@ -16,7 +15,7 @@ class ExifDataframe:
 
     """
 
-    def __init__(self, dict_data: dict):
+    def __init__(self, dict_data: dict,output_folder_path):
         """
         Initializes the Exif_dataframe object with a dictionary of EXIF data.
         
@@ -24,6 +23,7 @@ class ExifDataframe:
             dict_data (dict): The dictionary containing EXIF data.
         """
         self.df = pd.DataFrame(dict_data)
+        self.output_folder = output_folder_path
              
     def get_dataframe(self):
         """
@@ -38,14 +38,14 @@ class ExifDataframe:
         """
         Saves the DataFrame to an Excel file in the 'output' folder.
         """
-        output_excel = os.path.join(output_folder, 'output_excel.xlsx')
+        output_excel = os.path.join(self.output_folder, 'output_excel.xlsx')
         self.df.to_excel(output_excel, index=False)
         
     def df_to_csv(self):
         """
         Saves the DataFrame to a CSV file in the 'output' folder.
         """
-        output_csv = os.path.join(output_folder, 'output_csv.csv')
+        output_csv = os.path.join(self.output_folder, 'output_csv.csv')
         self.df.to_csv(output_csv, index=False)
     
     def get_most_common(self, key_name: str, df: pd.DataFrame):

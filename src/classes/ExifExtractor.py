@@ -75,7 +75,6 @@ class ExifExtractor():
             None
         """
 
-        # TODO: COMMENTI AL CODICE
         with ExifToolHelper() as et:
             if model_value is not None:
                 model_tag = et.get_tags(image_path, "EXIF:Model")
@@ -83,12 +82,12 @@ class ExifExtractor():
                     model_tag = model_tag[0]["EXIF:Model"]
                     if model_tag == model_value:
                         for data in et.get_metadata(image_path):
-                            self.__fix_dict(data) # RIVEDI FIX
+                            #self.__fix_dict(data) # RIVEDI FIX
                             for key in dict_data.keys(): 
                                 value = data.get(key, None)
-                                if key in dict_data: # ??????????????????????
-                                    clean_val = self.__clean_value(value)
-                                    dict_data[key].append(clean_val)   
+                                clean_val = self.__clean_value(value)
+                                dict_data[key].append(clean_val)
+                                #dict_data[key].append(value)     
             else:
                 for data in et.get_metadata(image_path):
                     self.__fix_dict(data)
@@ -97,8 +96,7 @@ class ExifExtractor():
                         if key in dict_data:
                             clean_val = self.__clean_value(value)
                             dict_data[key].append(clean_val)
-    
-    
+                            #dict_data[key].append(value)
     
     def __extract_exif(self, image_folder, dict_data: dict, model_value: str = None, tot_images=None):
         """
@@ -119,7 +117,6 @@ class ExifExtractor():
         Returns:
             dict: A dictionary containing the extracted and filtered EXIF metadata from the images.
         """
-        print("prova") # print prova ???
         if tot_images is not None:
             count = 0
             for filename in os.listdir(image_folder):
@@ -133,23 +130,8 @@ class ExifExtractor():
             for filename in os.listdir(image_folder):
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff',".heic")):
                     image_path = os.path.join(image_folder, filename)
-                    print(f"{image_path},{model_value}")
                     self.__set_dict_data(image_path,dict_data,model_value)
         return dict_data
-    
-    # def __fix_data(self,dict_data: str):
-    #     """
-    #     Fix the lists of dict_data
-        
-    #     Args:
-    #         dict_data (dict): The dictionary containing the EXIF data.
-        
-    #     """
-    #     max_length = max(len(v) for v in dict_data.values()) 
-    #     for key in dict_data:
-    #         while len(dict_data[key]) < max_length:
-    #             dict_data[key].append(None)
-    
     
     def set_data(self, image_folder, dict_data: dict, model_value: str = None, tot_images=None):
         """
@@ -164,7 +146,6 @@ class ExifExtractor():
         Returns:
             dict: The filtered dictionary data.
         """
-        
         return self.__extract_exif(image_folder,dict_data,model_value,tot_images)
     
     
