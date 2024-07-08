@@ -5,7 +5,6 @@
 
 import argparse
 import os
-import shutil
 
 from utils.get_exif_data import get_folder_data,get_image_data
 from utils.set_exif import set_exif_tags
@@ -16,50 +15,8 @@ from utils.save_exif import save_exif_dataframe,save_exif_json
 root_dir = os.path.dirname(os.path.dirname(__file__))
 output_folder = os.path.join(root_dir, 'output')
 
-
-def file_backup(images_path,tot_images = None):
-    if os.path.exists(images_path):
-        if os.path.isdir(images_path):
-            if tot_images is not None:
-                count = 0
-                backup_dir = os.path.join(images_path, 'backup')
-                os.makedirs(backup_dir, exist_ok=True)
-                for filename in os.listdir(images_path):
-                    if count >= tot_images:
-                        break
-                    source_file = os.path.join(images_path, filename)
-                    if os.path.isfile(source_file):
-                        backup_path = os.path.join(backup_dir, filename)
-                        try:
-                            shutil.copy2(source_file, backup_path)
-                        except Exception as e:
-                            print(f"Failed to copy {source_file} to {backup_path}: {e}")
-                    count += 1
-            else:
-                backup_dir = os.path.join(images_path, 'backup')
-                os.makedirs(backup_dir, exist_ok=True)
-                for filename in os.listdir(images_path):
-                    source_file = os.path.join(images_path, filename)
-                    if os.path.isfile(source_file):
-                        backup_path = os.path.join(backup_dir, filename)
-                        try:
-                            shutil.copy2(source_file, backup_path)
-                        except Exception as e:
-                            print(f"Failed to copy {source_file} to {backup_path}: {e}")
-            #print(f"Images copied to {backup_path}")
-        else:
-            image_dir = os.path.dirname(images_path)
-            backup_dir = os.path.join(image_dir, 'backup')
-            os.makedirs(backup_dir, exist_ok=True)
-            image_name = os.path.basename(images_path)
-            backup_path = os.path.join(backup_dir, image_name)
-            shutil.copy2(images_path, backup_path)
-            print(f"Image copied to {backup_path}")
-    else:
-        raise Exception(f"The provided path - {images_path} - deos not exist")
-
-
 def run(args):
+    print(args.images_path)
     exif_data = {}
     if os.path.exists(args.images_path):
         
@@ -76,8 +33,10 @@ def run(args):
             else:
                 print("The specified path is a file.")
                 exif_data = get_image_data(args.images_path)
-                save_exif_json(exif_data,args.output_folder)
-                print(f"The EXIF data has been saved to the file image_exif.json in the {args.output_folder} folder")
+                print(exif_data)
+                save_exif_json(exif_data,args.images_path,args.output_folder)
+                filename = os.path.splitext(os.path.basename(args.images_path))[0]
+                print(f"The EXIF data has been saved to the file {filename}.json in the {args.output_folder} folder")
             
         elif (args.mode).lower() == "set":
             print("Set mode")
@@ -121,7 +80,6 @@ if __name__ == "__main__":
     parser.add_argument('-t_i', '--template_image', type=str, default=None, help="The path to the image from which to extract EXIF data to copy to other images.")
     
     args = parser.parse_args()
-    file_backup(args.images_path,args.tot_images)
     run(args)    
     
     

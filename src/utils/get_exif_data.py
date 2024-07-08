@@ -1,9 +1,10 @@
 from classes.ExifExtractor import ExifExtractor
 from classes.IphoneExifExtractor import IphoneExifExtractor
 
-from exiftool import ExifToolHelper 
+from exiftool import ExifToolHelper,ExifTool 
 from models.exif_models import iphone_exif_key
 
+import re
 
 
 def get_folder_data(image_folder,model_value: str = None, tot_images = None):
@@ -24,13 +25,30 @@ def get_folder_data(image_folder,model_value: str = None, tot_images = None):
         dict_data = iphone_metadata.get_data()
         return dict_data
     elif model_value is None:
-        dictionary = {key: [] for key in iphone_exif_key} #change to generic_exif_key to be more generic
+        dictionary = {key: [] for key in iphone_exif_key}
         # TODO: create a dynamic dict that keep the unique tags of every processed image
         extractor = ExifExtractor()
         exif_metadata = extractor.set_data(image_folder,dictionary,model_value,tot_images)
         return exif_metadata 
     else:
         raise Exception(f"The provided model - {model_value} - is incorrect")
+    
+    
+    
+def parse_exif_output(output):
+    exif_dict = {}
+    pattern = re.compile(r"\s*\[(?P<group>[^\]]+)\]\s+(?P<tag>[^:]+)\s*:\s*(?P<value>.+)")
+    for line in output.split('\n'):
+        match = pattern.match(line)
+        if match:
+            group = match.group('group').strip()
+            tag = match.group('tag').strip().replace(" ", "") 
+            value = match.group('value').strip()
+            exif_dict[f"{group}:{tag}"] = value
+    return exif_dict
+
+
+
 
 def get_image_data(image_path):
     """
@@ -43,11 +61,11 @@ def get_image_data(image_path):
     Returns:
         dict: The dictionary with the extracted exif
     """
-    image_exif = {}
-    with ExifToolHelper() as et:
-        for data in et.get_metadata(image_path):
-            for key in data.keys(): 
-                image_exif[key] = data.get(key, None)
-    return image_exif  
-
+    with ExifTool() as et:
+        dict = et.execute(b"exiftool",image_path)
+        parsed_dict = parse_exif_output(dict)
+        return parsed_dict
+    
+    # with ExifToolHelper() as et:
+    #     return et.get_metadata(image_path)[0]
     

@@ -29,33 +29,6 @@ class ExifExtractor():
             return ''.join(c for c in value if c.isprintable() and c not in ('\x00', '\x01', '\x02', '\x03', '\x04', '\x05', '\x06', '\x07', '\x08', '\x0b', '\x0c', '\x0e', '\x0f'))
         return value
     
-    def __fix_dict(self, dictionary: dict):
-        """
-        Removes duplicate keys from the dictionary based on their suffixes.
-
-        This method iterates over the keys of the provided dictionary and removes
-        keys that have the same suffix (the part after the ':'). If multiple keys
-        share the same suffix, only the first key encountered is kept, and the 
-        others are removed.
-
-        Args:
-            dictionary (dict): The dictionary from which duplicate keys based on 
-                            their suffixes will be removed.
-        """
-        # SE GLI EXIF SONO CON UNA STRUTTURA DEVO REPLICARLI ESATTAMENTE CON LA STESSA STRUTTURA
-        seen_suffixes = set()
-        keys_to_remove = []
-
-        for key in dictionary.keys():
-            suffix = key.split(':')[-1]
-            if suffix in seen_suffixes:
-                keys_to_remove.append(key)
-            else:
-                seen_suffixes.add(suffix)
-
-        for key in keys_to_remove:
-            del dictionary[key]
-
     
     def __set_dict_data(self, image_path:str, dict_data: dict, model_value: str = None):
         """
@@ -82,21 +55,17 @@ class ExifExtractor():
                     model_tag = model_tag[0]["EXIF:Model"]
                     if model_tag == model_value:
                         for data in et.get_metadata(image_path):
-                            #self.__fix_dict(data) # RIVEDI FIX
                             for key in dict_data.keys(): 
                                 value = data.get(key, None)
                                 clean_val = self.__clean_value(value)
                                 dict_data[key].append(clean_val)
-                                #dict_data[key].append(value)     
             else:
+                print(et.get_metadata(image_path))
                 for data in et.get_metadata(image_path):
-                    self.__fix_dict(data)
                     for key in dict_data.keys():
-                        value = data.get(key, None)
-                        if key in dict_data:
-                            clean_val = self.__clean_value(value)
-                            dict_data[key].append(clean_val)
-                            #dict_data[key].append(value)
+                        value = data.get(key, "None") #None means that key is not in data
+                        clean_val = self.__clean_value(value)
+                        dict_data[key].append(clean_val)
     
     def __extract_exif(self, image_folder, dict_data: dict, model_value: str = None, tot_images=None):
         """
@@ -120,6 +89,9 @@ class ExifExtractor():
         if tot_images is not None:
             count = 0
             for filename in os.listdir(image_folder):
+                file_path = os.path.join(image_folder, filename)
+                if not os.path.isfile(file_path):
+                    count -= 1
                 if count >= tot_images:
                     break
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff',".heic")):
