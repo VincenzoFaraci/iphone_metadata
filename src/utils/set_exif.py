@@ -184,7 +184,7 @@ def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: 
             else:
                 with ExifTool() as et:
                     #et.execute(b"-tagsfromfile", default_image_path, b"-exif:all", "--subifd:all", "-xmp:all", "-jfif:all", "-mpf:all", image_path)
-                    et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all", image_path)
+                    et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
                     #et.execute(b"exiftool","-thumbnailimage=",image_path)
                 icc_set(default_image_path,image_path)
                 set_date(image_path)
