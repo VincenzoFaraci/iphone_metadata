@@ -1,10 +1,6 @@
 import json
 import os
-import io
 
-
-import piexif
-from PIL import Image
 from exiftool import ExifToolHelper,ExifTool
 from test.check_tags import check_tags
 
@@ -64,68 +60,7 @@ def set_date(image_path):
         print(f"After setting create_date: {create_date}, access_date: {access_date}")
         print("Added",tmp_dict)
 
-
-def extract_and_save_thumbnail(image_path, thumbnail_size=(128, 128), thumbnail_filename='thumbnail.jpg'):
-    """
-    Extracts a thumbnail from the given image and saves it to a file.
-
-    Args:
-        image_path (str): Path to the image file.
-        thumbnail_size (tuple): Size of the thumbnail (width, height). Default is (128, 128).
-        thumbnail_filename (str): Name of the file to save the thumbnail. Default is 'thumbnail.jpg'.
-
-    Returns:
-        bool: True if thumbnail extraction and saving were successful, False otherwise.
-    """
-    try:
-        # Open the image
-        img = Image.open(image_path)
-
-        # Create thumbnail
-        img.thumbnail(thumbnail_size, Image.LANCZOS)
-
-        # Save thumbnail to a file
-        thumbnail_path = os.path.join(os.path.dirname(image_path), thumbnail_filename)
-        img.save(thumbnail_path, format='JPEG')
-
-        print(f"Thumbnail saved to: {thumbnail_path}")
-        img.show()
-        # Delete the saved image file
-        # os.remove(thumbnail_path)
-        # print(f"Deleted: {thumbnail_path}")
-
-        return True
-
-    except Exception as e:
-        print(f"Error extracting or saving thumbnail: {str(e)}")
-        return False
-
-
-def thumbnails_set(image_path):
-    img_original = Image.open(image_path)
-        # Estrai i metadati EXIF dall'immagine originale
-    exif_dict = piexif.load(img_original.info['exif'])
-
-    # Rimuovi la miniatura esistente dai metadati EXIF
-    if 'thumbnail' in exif_dict:
-        del exif_dict['thumbnail']
-
-    # Creare una nuova miniatura
-    img_thumbnail = img_original.copy()
-    img_thumbnail.thumbnail((128, 128), Image.LANCZOS)
-
-    # Convertire la miniatura in byte
-    thumbnail_io = io.BytesIO()
-    img_thumbnail.save(thumbnail_io, format='JPEG')
-    exif_dict['thumbnail'] = thumbnail_io.getvalue()
-
-    # Converti i metadati EXIF in un formato compatibile
-    exif_bytes = piexif.dump(exif_dict)
-
-    # Salva l'immagine modificata mantenendo i metadati originali
-    img_original.save(image_path)
-
-    
+ 
 def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: str = None,exif_template_path:str = None):
     """
     Set EXIF data for all the image files in the specified folder.
@@ -150,20 +85,18 @@ def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: 
                     if image_template_path is not None:
                         print("We're using the template image to copy his exif")
                         with ExifTool() as et:
-                            et.execute(b"exiftool", b"-TagsFromFile", image_template_path, b"-all:all>all:all", image_path)
-                            #et.execute(b"exiftool","-thumbnailimage=",image_path)
+                            et.execute(b"exiftool", b"-TagsFromFile", image_template_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
                         icc_set(image_template_path,image_path)
                         set_date(image_path)
-                        if icc_profile_path is None:
-                            icc_set(default_image_path,image_path)
-                        else:
+                        if icc_profile_path is not None:
                             icc_set(icc_profile_path,image_path)   
                     else:
                         with ExifTool() as et:
-                            et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all", image_path)
-                            et.execute(b"exiftool","-thumbnailimage=",image_path)
+                            et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
                         icc_set(default_image_path,image_path)
                         set_date(image_path)
+                        if icc_profile_path is not None:
+                            icc_set(icc_profile_path,image_path)
                 else:
                     print(f"Unrecognized file format: {filename}")
         elif os.path.isfile(images_folder):
@@ -175,41 +108,22 @@ def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: 
                     et.execute(b"-tagsfromfile", image_template_path, b"-exif:all", "--subifd:all", "-xmp:all","-jfif:all", "-mpf:all", image_path)
                 icc_set(image_template_path,image_path)
                 set_date(image_path)
-                
-                
+                if icc_profile_path is not None:
+                            icc_set(icc_profile_path,image_path)
+            
                 with ExifToolHelper() as et:
                     check_tags((et.get_metadata(image_path))[0],(et.get_metadata(image_template_path))[0])
                 
-                
             else:
                 with ExifTool() as et:
-                    #et.execute(b"-tagsfromfile", default_image_path, b"-exif:all", "--subifd:all", "-xmp:all", "-jfif:all", "-mpf:all", image_path)
                     et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
-                    #et.execute(b"exiftool","-thumbnailimage=",image_path)
                 icc_set(default_image_path,image_path)
                 set_date(image_path)
-                #thumbnails_set(image_path)
-                # with ExifTool() as et:
-                #     et.execute(b"-b",b"-ThumbnailImage", image_path,"my_thumbnail.jpg")
-                #print("Abbiamo fatto?")
+                if icc_profile_path is not None:
+                            icc_set(icc_profile_path,image_path)
+                
                 with ExifToolHelper() as et:
-                    check_tags((et.get_metadata(image_path))[0],(et.get_metadata(default_image_path))[0])
-                
-                
-            
-                    # # Rimuovi la miniatura esistente dai metadati EXIF (opzionale)
-            # if 'thumbnail' in exif_dict:
-            #     del exif_dict['thumbnail']
-
-            # # Creare una nuova miniatura
-            # img_thumbnail = img_result.copy()
-            # img_thumbnail.thumbnail((128, 128), Image.ANTIALIAS)
-
-            # # Convertire la miniatura in byte
-            # thumbnail_io = io.BytesIO()
-            # img_thumbnail.save(thumbnail_io, format='JPEG')
-            # exif_dict['thumbnail'] = thumbnail_io.getvalue()
-                  
+                    check_tags((et.get_metadata(image_path))[0],(et.get_metadata(default_image_path))[0])     
     else:
         raise Exception(f"The provided path: {images_folder} does not exist")
 
