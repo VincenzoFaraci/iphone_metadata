@@ -60,7 +60,7 @@ class ExifExtractor():
                                 clean_val = self.__clean_value(value)
                                 dict_data[key].append(clean_val)
             else:
-                print(et.get_metadata(image_path))
+                #print(et.get_metadata(image_path))
                 for data in et.get_metadata(image_path):
                     for key in dict_data.keys():
                         value = data.get(key, "None") #None means that key is not in data

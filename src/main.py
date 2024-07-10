@@ -6,6 +6,8 @@
 import argparse
 import os
 
+
+from PIL import Image
 from utils.get_exif_data import get_folder_data,get_image_data
 from utils.set_exif import set_exif_tags
 from utils.delete_exif import remove_exif,remove_multiple_exif
@@ -14,6 +16,46 @@ from utils.save_exif import save_exif_dataframe,save_exif_json
 
 root_dir = os.path.dirname(os.path.dirname(__file__))
 output_folder = os.path.join(root_dir, 'output')
+
+
+
+def convert_png_to_jpg(input_folder, output_folder=None):
+    # Controlla se la cartella di output esiste, altrimenti la crea
+    # if not os.path.exists(output_folder):
+    #     os.makedirs(output_folder)
+    if os.path.isfile(input_folder):
+        if input_folder.endswith(".png"):
+            # Costruisce il percorso completo del file di input
+            input_path = os.path.join(input_folder, filename)
+            # Costruisce il percorso completo del file di output
+            output_path = os.path.join(input_folder, os.path.splitext(filename)[0] + ".jpg")
+            
+            # Apre l'immagine PNG
+            with Image.open(input_path) as img:
+                # Converte l'immagine in RGB (i JPG non supportano la trasparenza)
+                rgb_img = img.convert('RGB')
+                # Salva l'immagine come JPG
+                rgb_img.save(output_path, "JPEG")
+        else:
+            pass
+    else:
+        # Itera su tutti i file nella cartella di input
+        for filename in os.listdir(input_folder):
+            if filename.endswith(".png"):
+                # Costruisce il percorso completo del file di input
+                input_path = os.path.join(input_folder, filename)
+                # Costruisce il percorso completo del file di output
+                output_path = os.path.join(input_folder, os.path.splitext(filename)[0] + ".jpg")
+                
+                # Apre l'immagine PNG
+                with Image.open(input_path) as img:
+                    # Converte l'immagine in RGB (i JPG non supportano la trasparenza)
+                    rgb_img = img.convert('RGB')
+                    # Salva l'immagine come JPG
+                    rgb_img.save(output_path, "JPEG")
+                    
+    #print(f"Converted {input_path} to {output_path}")
+
 
 def run(args):
     print(args.images_path)
@@ -80,6 +122,7 @@ if __name__ == "__main__":
     parser.add_argument('-t_i', '--template_image', type=str, default=None, help="The path to the image from which to extract EXIF data to copy to other images.")
     
     args = parser.parse_args()
+    convert_png_to_jpg(args.images_path)
     run(args)    
     
     

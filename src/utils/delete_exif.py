@@ -14,7 +14,7 @@ def remove_exif(image_path):
         None
     """ 
     with ExifTool() as e:
-        e.execute(f'-all=', image_path.encode())
+        e.execute(b'-all=', image_path.encode())
 
 
 def remove_multiple_exif(image_folder_path):

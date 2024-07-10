@@ -1,11 +1,58 @@
 import json
 import os
 
+from PIL import Image
 from exiftool import ExifToolHelper,ExifTool
 from test.check_tags import check_tags
 
 root_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 default_image_path = os.path.join(root_dir, 'src' , 'models', 'default_image.jpeg')
+
+
+
+
+def create_thumbnail(input_image_path, thumbnail_size=(128, 128)):
+    """
+    Create a thumbnail of the specified image and save it to the output path.
+
+    Args:
+    input_image_path (str): Path to the original image.
+    output_thumbnail_path (str): Path to save the thumbnail.
+    thumbnail_size (tuple): Dimensions of the thumbnail (width, height).
+    """
+    file_name, file_extension = os.path.splitext(os.path.basename(input_image_path))
+    thumbnail_path = os.path.join(os.path.dirname(input_image_path), file_name + '_thumbnail.jpg')
+    try:
+        image = Image.open(input_image_path)
+        image.thumbnail(thumbnail_size)
+        image.save(thumbnail_path)
+        
+        print(f"Thumbnail creata con successo: {thumbnail_path}")
+        return thumbnail_path
+    except IOError:
+        print(f"Impossibile aprire l'immagine: {input_image_path}")
+    finally:
+        image.close()
+        
+        
+from exiftool import ExifTool
+
+def restore_orientation_tag(image_path):
+    """
+    Restore the original EXIF orientation tag of the image.
+
+    Args:
+        image_path (str): Path to the image file.
+
+    Returns:
+        None
+    """
+    tmp = 0
+    with ExifToolHelper() as eth:
+        tmp = eth.get_tags(image_path,"EXIF:Orientation")[0]["EXIF:Orientation"]
+    with ExifTool() as et:
+        et.execute(b"exiftool",b"-EXIF:Orientation=", image_path)
+
 
 
 def icc_set(icc_source_image, icc_dest_image):
@@ -54,13 +101,10 @@ def set_date(image_path):
     with ExifToolHelper() as et:
         create_date = (et.get_tags(image_path, "File:FileCreateDate"))[0].get("File:FileCreateDate",None)
         access_date = (et.get_tags(image_path, "File:FileAccessDate"))[0].get("File:FileAccessDate",None)
-        print(f"create_date: {create_date}, access_date: {access_date}")
         tmp_dict["File:FileModifyDate"] = create_date
         et.set_tags(image_path,tmp_dict)
-        print(f"After setting create_date: {create_date}, access_date: {access_date}")
-        print("Added",tmp_dict)
 
- 
+
 def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: str = None,exif_template_path:str = None):
     """
     Set EXIF data for all the image files in the specified folder.
@@ -75,37 +119,50 @@ def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: 
     """
     if os.path.exists(images_folder):
         
-        data_dict = choose_exif_template(exif_template_path)
+        #data_dict = choose_exif_template(exif_template_path)
 
         if os.path.isdir(images_folder):
             for filename in os.listdir(images_folder):
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff',".heic")):
                     image_path = os.path.join(images_folder, filename)
+                    thumbnail_path = create_thumbnail(image_path)
                     print(f"We're working with this file: {image_path}")
                     if image_template_path is not None:
                         print("We're using the template image to copy his exif")
                         with ExifTool() as et:
                             et.execute(b"exiftool", b"-TagsFromFile", image_template_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
+                            et.execute(b"exiftool", (f"-ThumbnailImage<={thumbnail_path}").encode(), image_path)
                         icc_set(image_template_path,image_path)
                         set_date(image_path)
                         if icc_profile_path is not None:
                             icc_set(icc_profile_path,image_path)   
+                        restore_orientation_tag(image_path)
+                        # if os.path.exists(thumbnail_path):
+                        #     os.remove(thumbnail_path)
                     else:
                         with ExifTool() as et:
                             et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
+                            et.execute(b"exiftool", (f"-ThumbnailImage<={thumbnail_path}").encode(), image_path)
                         icc_set(default_image_path,image_path)
                         set_date(image_path)
                         if icc_profile_path is not None:
                             icc_set(icc_profile_path,image_path)
+                        restore_orientation_tag(image_path)
+                        # if os.path.exists(thumbnail_path):
+                        #     os.remove(thumbnail_path)
                 else:
                     print(f"Unrecognized file format: {filename}")
         elif os.path.isfile(images_folder):
             image_path = images_folder
-            
+            thumbnail_path = create_thumbnail(image_path)
+            with ExifTool()as et:
+                original_orientation = et.execute(b"exiftool",b"-EXIF:Orientation", image_path)
+            print(original_orientation)
             if image_template_path is not None:
                 print("We're using the template image to copy his exif")
                 with ExifTool() as et:
                     et.execute(b"-tagsfromfile", image_template_path, b"-exif:all", "--subifd:all", "-xmp:all","-jfif:all", "-mpf:all", image_path)
+                    et.execute(b"exiftool", (f"-ThumbnailImage<={thumbnail_path}").encode(), image_path)
                 icc_set(image_template_path,image_path)
                 set_date(image_path)
                 if icc_profile_path is not None:
@@ -113,23 +170,31 @@ def set_exif_tags(images_folder: str,icc_profile_path: str,image_template_path: 
             
                 with ExifToolHelper() as et:
                     check_tags((et.get_metadata(image_path))[0],(et.get_metadata(image_template_path))[0])
-                
+                restore_orientation_tag(image_path)
+                # if os.path.exists(thumbnail_path):
+                #     os.remove(thumbnail_path)
             else:
+                
                 with ExifTool() as et:
-                    et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all",b"--ThumbnailImage", image_path)
+                    et.execute(b"exiftool", b"-TagsFromFile", default_image_path, b"-all:all>all:all", image_path)
+                    #FUNZIONE CHE ESTRAE LA THUMBNAIL E POI LA CANCELLA DOPO LA MODIFICA
+                    et.execute(b"exiftool", (f"-ThumbnailImage<={thumbnail_path}").encode(), image_path)
                 icc_set(default_image_path,image_path)
                 set_date(image_path)
                 if icc_profile_path is not None:
                             icc_set(icc_profile_path,image_path)
                 
                 with ExifToolHelper() as et:
-                    check_tags((et.get_metadata(image_path))[0],(et.get_metadata(default_image_path))[0])     
+                    check_tags((et.get_metadata(image_path))[0],(et.get_metadata(default_image_path))[0])
+            restore_orientation_tag(image_path)
+            # if os.path.exists(thumbnail_path):
+            #         os.remove(thumbnail_path)              
     else:
         raise Exception(f"The provided path: {images_folder} does not exist")
 
 
          
-    
+#TODO: FARE UNA FUNZIONE CHE NON FACCIA CAMBIARE LA DIMENSIONE E L'ORIENTAMENTO     
     
 
  
