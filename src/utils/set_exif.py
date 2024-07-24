@@ -69,30 +69,6 @@ def icc_set(icc_source_image, icc_dest_image):
         et.execute(b"-TagsFromFile", icc_source_image,
                    b"-icc_profile", icc_dest_image)
 
-#TODO: implement this
-# def choose_exif_template(exif_template_path: str = None):
-#     """
-#     Return the EXIF model to be used,
-#     whether it is the standard one or the user-provided one.
-
-#     Args:
-#         exif_template_path (str): The path to the exif template.
-#         exif_template_path (str): the path of the provided exif set
-#     Returns:
-#         dict : dictionary to use as exif template
-#     """
-#     if exif_template_path is None:
-#         print("Default Exif set has been used since no Exif model was provided.")
-#         default_exif_set_path = os.path.join(
-#             root_dir, 'src', 'models', 'exif_template.json')
-#         with open(default_exif_set_path, 'r') as file:
-#             default_exif_set = json.load(file)
-#         return default_exif_set
-#     else:
-#         print("The provided Exif set has been used")
-#         with open(exif_template_path, 'r') as file:
-#             data_dict = json.load(file)
-#     return data_dict
 
 
 def set_date(image_path):
@@ -141,7 +117,6 @@ def set_exif_tags(images_folder: str, icc_profile_path: str, image_template_path
         None
     """
     if os.path.exists(images_folder):
-        # data_dict = choose_exif_template(exif_template_path) TODO: permettere il passaggio di un dizionario?
         if os.path.isdir(images_folder):
             for filename in os.listdir(images_folder):
                 if filename.lower().endswith(('.jpg', '.jpeg', '.png', '.tiff', ".heic")):
@@ -163,5 +138,3 @@ def set_exif_tags(images_folder: str, icc_profile_path: str, image_template_path
                             0], (et.get_metadata(default_image_path))[0])
     else:
         raise Exception(f"The provided path: {images_folder} does not exist")
-
-#10 luglio 11:07
