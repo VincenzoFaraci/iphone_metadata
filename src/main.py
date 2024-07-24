@@ -6,7 +6,6 @@
 import argparse
 import os
 
-
 from PIL import Image
 from utils.get_exif_data import get_folder_data,get_image_data
 from utils.set_exif import set_exif_tags

@@ -19,7 +19,8 @@ def check_tags(image_exif_dict:dict, template_data_dict:dict):
     for key in template_data_dict.keys():
         if key in image_exif_dict.keys():
             if image_exif_dict[key] == template_data_dict[key]:
-                print(f"Tag present and the value has been set: {key} , setted:{image_exif_dict[key]}, template:{template_data_dict[key]}")
+                #print(f"Tag present and the value has been set: {key} , setted:{image_exif_dict[key]}, template:{template_data_dict[key]}")
+                continue
             else:
                 print(f"Tag present BUT the value has NOT been set: {key} , setted:{image_exif_dict[key]}, template:{template_data_dict[key]}")
         else:
